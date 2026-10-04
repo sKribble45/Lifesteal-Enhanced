@@ -60,9 +60,7 @@ class MoveItemListener : Listener{
     @EventHandler
     fun onInventoryDrag(event: InventoryDragEvent){
         allowedInvs ?: return
-        plugin.logger.info("hi event.inventory.type: ${event.inventory.type} event.newItems: ${event.newItems} event.rawSlots: ${event.rawSlots} event.cursor: ${event.cursor} event.oldCursor: ${event.oldCursor}")
         if (event.inventory.type !in allowedInvs && (isHeart(event.cursor) || isHeart(event.oldCursor))){
-            plugin.logger.info("hi23")
             event.isCancelled = true
         }
     }
