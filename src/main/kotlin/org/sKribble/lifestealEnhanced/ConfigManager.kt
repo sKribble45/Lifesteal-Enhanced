@@ -2,7 +2,6 @@ package org.sKribble.lifestealEnhanced
 
 import org.bukkit.configuration.file.FileConfiguration
 import org.bukkit.event.inventory.InventoryType
-import org.bukkit.inventory.Recipe
 import org.bukkit.inventory.ShapedRecipe
 import org.bukkit.plugin.Plugin
 import org.sKribble.lifestealEnhanced.recipies.AltHeartRecipe

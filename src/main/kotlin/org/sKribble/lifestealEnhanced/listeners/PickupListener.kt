@@ -5,7 +5,6 @@ import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryPickupItemEvent
 import org.bukkit.event.inventory.InventoryType
 import org.sKribble.lifestealEnhanced.ConfigManager
-import org.sKribble.lifestealEnhanced.PluginManager.plugin
 import org.sKribble.lifestealEnhanced.items.HeartItem
 
 class PickupListener : Listener {

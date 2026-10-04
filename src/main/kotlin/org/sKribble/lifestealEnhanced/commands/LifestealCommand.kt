@@ -4,7 +4,6 @@ import changeHearts
 import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.tree.LiteralCommandNode
-import com.sun.org.apache.xpath.internal.operations.Bool
 import getHearts
 import getHeartsExtensive
 import io.papermc.paper.command.brigadier.CommandSourceStack

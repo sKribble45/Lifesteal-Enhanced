@@ -2,7 +2,6 @@ package org.sKribble.lifestealEnhanced
 
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
-import org.sKribble.lifestealEnhanced.items.HeartItem
 
 fun removeItemFromInv(inv : Inventory, item: ItemStack, amount: Int){
     val invIterator = inv.iterator()
