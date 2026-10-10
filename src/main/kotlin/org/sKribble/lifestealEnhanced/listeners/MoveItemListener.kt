@@ -27,8 +27,6 @@ class MoveItemListener : Listener{
         val clickedInventory = event.clickedInventory ?: return
         val currentItem = event.currentItem
         val cursorItem = event.cursor
-        plugin.logger.info("top ${clickedInventory.type.toString()}")
-        plugin.logger.info("clicked ${clickedInventory.type.toString()}")
 
         // moving the item into a non-player inventory with shift click
         if (event.isShiftClick && isHeart(currentItem)) {
