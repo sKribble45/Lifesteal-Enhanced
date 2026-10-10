@@ -31,8 +31,8 @@ object ConfigManager {
 
     val allowedInventories: List<InventoryType>?
         get() = when (config.getString("allowed-inventories")) {
-            "EChest" -> listOf(InventoryType.CRAFTING, InventoryType.PLAYER, InventoryType.ENDER_CHEST)
-            "Player" -> listOf(InventoryType.CRAFTING, InventoryType.PLAYER)
+            "EChest" -> listOf(InventoryType.WORKBENCH, InventoryType.CRAFTING, InventoryType.PLAYER, InventoryType.ENDER_CHEST)
+            "Player" -> listOf(InventoryType.WORKBENCH, InventoryType.CRAFTING, InventoryType.PLAYER)
             else -> null
         }
 
