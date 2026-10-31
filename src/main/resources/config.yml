@@ -6,6 +6,9 @@ config-version: 1
 minimum-hearts: 5.0
 maximum-hearts: 15.0
 
+# Whether to ban people if they die at minimum hearts
+ban-bellow-min: true
+
 # Whether to give the killer the heart item when killing someone when they're on max hearts
 reward-heart-item: true
 

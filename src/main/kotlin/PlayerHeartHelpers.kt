@@ -18,16 +18,6 @@ fun Player.changeHearts(amount: Double) : Boolean{
     val modifiedHearts =  initialHearts + amount
     if ((modifiedHearts < ConfigManager.minHearts && amount < 0) || (modifiedHearts > ConfigManager.maxHearts && amount > 0)) return false
     healthAttribute.baseValue = (initialHearts + amount)*2
-    if (modifiedHearts <= 0.0){
-        val banList = Bukkit.getBanList(BanListType.PROFILE)
-        banList.addBan(
-            this.playerProfile,
-            "You ran out of hearts, you have been banned",
-            null as java.time.Duration?,
-            "Server"
-        )
-        this.kick(Component.text("You ran out of hearts, you have been banned"))
-    }
     return true
 }
 

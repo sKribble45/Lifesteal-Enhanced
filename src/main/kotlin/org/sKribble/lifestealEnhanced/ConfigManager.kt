@@ -65,4 +65,7 @@ object ConfigManager {
 
     val glowingHearts: Boolean
         get() = config.getBoolean("glowing-hearts")
+
+    val banBellowMinHearts : Boolean
+        get() = config.getBoolean("ban-bellow-min")
 }
