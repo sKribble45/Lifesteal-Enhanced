@@ -1,6 +1,7 @@
 package org.sKribble.lifestealEnhanced.listeners
 
 import addHeartForce
+import getHeartsExtensive
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
 import org.bukkit.event.EventHandler

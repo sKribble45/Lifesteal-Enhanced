@@ -2,14 +2,16 @@
 config-version: 1
 # u can touch this tho \/
 
+# Make minimum hearts 0 to ban a player when they run out of hearts.
 minimum-hearts: 5.0
 maximum-hearts: 15.0
 
 # Whether to give the killer the heart item when killing someone when they're on max hearts
 reward-heart-item: true
 
-# What places to take hearts from when being killed.
-# Bar : the hearts above your hotbar
+# What places to take hearts from when being killed at minimum hearts
+# (doesn't do anything if minimum is at zero as you just get banned if you get to zero hearts)
+# Bar : the hearts above your hotbar (normal lifesteal)
 # Inv : the hearts in your inventory + bar
 # All : the hearts in you e chest + inv + bar
 take-hearts: All
@@ -32,7 +34,7 @@ limit-heart-crafting : true
 # Maximum hearts you are able to have to be able to craft a heat.
 max-heart-craft-hearts: 10.0
 
-# What places to count hearts from when there is a heart limit (like crafting hearts)
+# What places to count hearts from when there is a heart limit (for example, crafting hearts)
 # Bar : the hearts above your hotbar
 # Inv : the hearts in your inventory + bar
 # All : the hearts in you e chest + inv + bar

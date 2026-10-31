@@ -1,5 +1,8 @@
+import io.papermc.paper.ban.BanListType
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
+import org.bukkit.BanList
+import org.bukkit.Bukkit
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeInstance
 import org.bukkit.entity.Player
@@ -7,6 +10,7 @@ import org.sKribble.lifestealEnhanced.ConfigManager
 import org.sKribble.lifestealEnhanced.countItemsInInv
 import org.sKribble.lifestealEnhanced.items.HeartItem
 import org.sKribble.lifestealEnhanced.removeItemFromInv
+import kotlin.time.Instant
 
 fun Player.changeHearts(amount: Double) : Boolean{
     val healthAttribute : AttributeInstance = this.getAttribute(Attribute.MAX_HEALTH)!!
@@ -14,6 +18,16 @@ fun Player.changeHearts(amount: Double) : Boolean{
     val modifiedHearts =  initialHearts + amount
     if ((modifiedHearts < ConfigManager.minHearts && amount < 0) || (modifiedHearts > ConfigManager.maxHearts && amount > 0)) return false
     healthAttribute.baseValue = (initialHearts + amount)*2
+    if (modifiedHearts <= 0.0){
+        val banList = Bukkit.getBanList(BanListType.PROFILE)
+        banList.addBan(
+            this.playerProfile,
+            "You ran out of hearts, you have been banned",
+            null as java.time.Duration?,
+            "Server"
+        )
+        this.kick(Component.text("You ran out of hearts, you have been banned"))
+    }
     return true
 }
 
