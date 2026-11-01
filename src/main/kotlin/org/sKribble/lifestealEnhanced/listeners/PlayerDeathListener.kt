@@ -28,7 +28,7 @@ class PlayerDeathListener() : Listener {
                     player.playerProfile,
                     "You ran out of hearts, you have been banned",
                     null as java.time.Duration?,
-                    "Server"
+                    "org.sKribble.lifestealEnhanced"
                 )
                 player.kick(Component.text("You ran out of hearts, you have been banned"))
             }

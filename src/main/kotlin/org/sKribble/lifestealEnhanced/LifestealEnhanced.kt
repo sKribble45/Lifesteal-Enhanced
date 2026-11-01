@@ -5,6 +5,8 @@ import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import org.sKribble.lifestealEnhanced.commands.*
 import org.sKribble.lifestealEnhanced.listeners.*
+import org.sKribble.lifestealEnhanced.listeners.HeartItemListener
+import org.sKribble.lifestealEnhanced.listeners.ReviveItemListener
 
 
 class LifestealEnhanced : JavaPlugin() {
@@ -14,12 +16,10 @@ class LifestealEnhanced : JavaPlugin() {
         PluginManager.init(this)
         ConfigManager.init(this)
         server.pluginManager.registerEvents(PlayerDeathListener(), this)
-        server.pluginManager.registerEvents(PlayerInteractionListener(), this)
-        server.pluginManager.registerEvents(MoveItemListener(), this)
-        server.pluginManager.registerEvents(PickupListener(), this)
         server.pluginManager.registerEvents(PlayerConnectionListener(), this)
-        server.pluginManager.registerEvents(ItemDestructionListener(), this)
-        server.pluginManager.registerEvents(DropItemListener(), this)
+        server.pluginManager.registerEvents(HeartItemListener(), this)
+        server.pluginManager.registerEvents(ReviveItemListener(), this)
+        server.pluginManager.registerEvents(GuiListener(), this)
 
 
         lifecycleManager.registerEventHandler(LifecycleEvents.COMMANDS){ event ->

@@ -2,6 +2,7 @@ package org.sKribble.lifestealEnhanced.commands
 
 import changeHearts
 import com.mojang.brigadier.arguments.IntegerArgumentType
+import com.mojang.brigadier.arguments.StringArgumentType
 import com.mojang.brigadier.context.CommandContext
 import com.mojang.brigadier.tree.LiteralCommandNode
 import getHearts
@@ -13,6 +14,7 @@ import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSele
 import org.bukkit.entity.Player
 import org.sKribble.lifestealEnhanced.PluginManager.plugin
 import org.sKribble.lifestealEnhanced.items.HeartItem
+import org.sKribble.lifestealEnhanced.items.ReviveItem
 import setHearts
 
 class LifestealCommand {
@@ -22,45 +24,49 @@ class LifestealCommand {
 
     fun createCommand(): LiteralCommandNode<CommandSourceStack> {
         val lifestealCommand = Commands.literal("lifesteal")
-                .then(Commands.literal("hearts")
-                    .requires { it.sender.hasPermission("lifesteal.command.sethearts") ||  it.sender.hasPermission("lifesteal.command.gethearts")}
-                    .then(Commands.literal("add")
-                        .requires { it.sender.hasPermission("lifesteal.command.sethearts") }
-                        .then(Commands.argument("player", ArgumentTypes.player())
-                            .then(Commands.argument("amount", IntegerArgumentType.integer(1))
-                                .executes { context -> heartCommand(context, HeartCommandType.ADD) })
-                        )
-                    )
-                    .then(Commands.literal("remove")
-                        .requires { it.sender.hasPermission("lifesteal.command.sethearts") }
-                        .then(Commands.argument("player", ArgumentTypes.player())
-                            .then(Commands.argument("amount", IntegerArgumentType.integer(1))
-                                .executes { context -> heartCommand(context, HeartCommandType.REMOVE) })
-                        )
-                    )
-                    .then(Commands.literal("set")
-                        .requires { it.sender.hasPermission("lifesteal.command.sethearts") }
-                        .then(Commands.argument("player", ArgumentTypes.player())
-                            .then(Commands.argument("amount", IntegerArgumentType.integer(1))
-                                .executes { context -> heartCommand(context, HeartCommandType.SET) })
-                        )
-                    )
-                    .then(Commands.literal("get")
-                        .requires { it.sender.hasPermission("lifesteal.command.gethearts") }
-                        .then(Commands.argument("player", ArgumentTypes.player())
-                            .executes { context -> heartCommand(context, HeartCommandType.GET) })
-                    )
+        lifestealCommand.then(Commands.literal("hearts")
+            .requires { it.sender.hasPermission("lifesteal.command.sethearts") ||  it.sender.hasPermission("lifesteal.command.gethearts")}
+            .then(Commands.literal("add")
+                .requires { it.sender.hasPermission("lifesteal.command.sethearts") }
+                .then(Commands.argument("player", ArgumentTypes.player())
+                    .then(Commands.argument("amount", IntegerArgumentType.integer(1))
+                        .executes { context -> heartCommand(context, HeartCommandType.ADD) })
                 )
-                .then(Commands.literal("reload")
-                    .requires { it.sender.hasPermission("lifesteal.command.reload") }
-                    .executes { context -> reloadCommand(context) })
-                .then(Commands.literal("give")
-                    .requires { it.sender.hasPermission("lifesteal.command.give") }
-                    .then(Commands.argument("player", ArgumentTypes.player())
-                        .then(Commands.argument("amount", IntegerArgumentType.integer(1))
-                            .executes { context -> giveItemCommand(context) })
-                    )
+            )
+            .then(Commands.literal("remove")
+                .requires { it.sender.hasPermission("lifesteal.command.sethearts") }
+                .then(Commands.argument("player", ArgumentTypes.player())
+                    .then(Commands.argument("amount", IntegerArgumentType.integer(1))
+                        .executes { context -> heartCommand(context, HeartCommandType.REMOVE) })
                 )
+            )
+            .then(Commands.literal("set")
+                .requires { it.sender.hasPermission("lifesteal.command.sethearts") }
+                .then(Commands.argument("player", ArgumentTypes.player())
+                    .then(Commands.argument("amount", IntegerArgumentType.integer(1))
+                        .executes { context -> heartCommand(context, HeartCommandType.SET) })
+                )
+            )
+            .then(Commands.literal("get")
+                .requires { it.sender.hasPermission("lifesteal.command.gethearts") }
+                .then(Commands.argument("player", ArgumentTypes.player())
+                    .executes { context -> heartCommand(context, HeartCommandType.GET) })
+            )
+        )
+
+        lifestealCommand.then(Commands.literal("reload")
+            .requires { it.sender.hasPermission("lifesteal.command.reload") }
+            .executes { context -> reloadCommand(context) })
+
+        lifestealCommand.then(Commands.literal("give")
+            .requires { it.sender.hasPermission("lifesteal.command.give") }
+            .then(Commands.argument("item", StringArgumentType.string())
+                .then(Commands.argument("player", ArgumentTypes.player())
+                    .then(Commands.argument("amount", IntegerArgumentType.integer(1))
+                        .executes { context -> giveItemCommand(context) })
+                )
+            )
+        )
         return lifestealCommand.build()!!
     }
 
@@ -108,11 +114,12 @@ class LifestealCommand {
             .resolve(context.source)
             .firstOrNull()
         if (player is Player) {
-            val heartStack = HeartItem()
+            val itemArg = StringArgumentType.getString(context, "item")
+            val itemStack = if (itemArg == "heart") HeartItem() else ReviveItem()
             val amount = IntegerArgumentType.getInteger(context, "amount")
-            heartStack.amount = amount
-            player.give(heartStack)
-            context.source.sender.sendMessage("Gave $amount heart(s) to ${player.name}")
+            itemStack.amount = amount
+            player.give(itemStack)
+            context.source.sender.sendMessage("Gave $amount ${itemStack.itemMeta.displayName()}(s) to ${player.name}")
             return 1
         }
         return 0
