@@ -7,6 +7,7 @@ import org.sKribble.lifestealEnhanced.commands.*
 import org.sKribble.lifestealEnhanced.listeners.*
 import org.sKribble.lifestealEnhanced.listeners.HeartItemListener
 import org.sKribble.lifestealEnhanced.listeners.ReviveItemListener
+import org.sKribble.lifestealEnhanced.recipies.ReviveRecipe
 
 
 class LifestealEnhanced : JavaPlugin() {
@@ -29,6 +30,7 @@ class LifestealEnhanced : JavaPlugin() {
 
         // Register recipes
         ConfigManager.heartRecipes?.forEach { Bukkit.addRecipe(it) }
+        Bukkit.addRecipe(ReviveRecipe())
     }
 
     override fun onDisable() {
