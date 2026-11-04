@@ -3,7 +3,7 @@ config-version: 1
 # u can touch this tho \/
 
 # Make minimum hearts 0 to ban a player when they run out of hearts.
-minimum-hearts: 5.0
+minimum-hearts: 3.0
 maximum-hearts: 15.0
 
 revive-item: true
@@ -12,7 +12,7 @@ revive-item: true
 ban-bellow-min: true
 
 # Whether to give the killer the heart item when killing someone when they're on max hearts
-reward-heart-item: true
+reward-heart-item: false
 
 # What places to take hearts from when being killed at minimum hearts
 # (doesn't do anything if minimum is at zero as you just get banned if you get to zero hearts)
@@ -35,7 +35,7 @@ allowed-inventories: EChest
 recipes-enabled: Both
 
 # Whether to limit the ability to craft a heart to how many hearts the player currently has
-limit-heart-crafting : true
+limit-heart-crafting : false
 # Maximum hearts you are able to have to be able to craft a heat.
 max-heart-craft-hearts: 10.0
 
