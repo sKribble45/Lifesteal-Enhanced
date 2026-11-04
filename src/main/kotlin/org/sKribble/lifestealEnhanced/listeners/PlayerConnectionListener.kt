@@ -11,6 +11,6 @@ class PlayerConnectionListener : Listener {
     fun onPlayerJoin(event: PlayerJoinEvent){
         val player = event.player
         ConfigManager.heartRecipes?.forEach { player.discoverRecipe(it.key) }
-        player.discoverRecipe(ReviveRecipe().key)
+        if (ConfigManager.reviveItem) player.discoverRecipe(ReviveRecipe().key)
     }
 }

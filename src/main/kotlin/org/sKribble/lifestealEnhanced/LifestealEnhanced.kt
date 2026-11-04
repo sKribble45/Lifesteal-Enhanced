@@ -30,7 +30,7 @@ class LifestealEnhanced : JavaPlugin() {
 
         // Register recipes
         ConfigManager.heartRecipes?.forEach { Bukkit.addRecipe(it) }
-        Bukkit.addRecipe(ReviveRecipe())
+        if (ConfigManager.reviveItem) Bukkit.addRecipe(ReviveRecipe())
     }
 
     override fun onDisable() {

@@ -68,4 +68,7 @@ object ConfigManager {
 
     val banBellowMinHearts : Boolean
         get() = config.getBoolean("ban-bellow-min")
+
+    val reviveItem : Boolean
+        get() = config.getBoolean("revive-item")
 }
