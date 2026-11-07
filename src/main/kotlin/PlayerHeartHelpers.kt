@@ -37,8 +37,8 @@ fun Player.getHearts() : Double{
  * This function acts like Player.getHearts whilst considering the config value "heart-count-include"
  */
 fun Player.getHeartsExtensive() : Double{
-    val inventoryHearts = if (ConfigManager.countInvHearts || ConfigManager.countEchestHearts) countItemsInInv(this.inventory, HeartItem()) else 0
-    val echestHearts = if (ConfigManager.countEchestHearts) countItemsInInv(this.enderChest, HeartItem()) else 0
+    val inventoryHearts = countItemsInInv(this.inventory, HeartItem())
+    val echestHearts = countItemsInInv(this.enderChest, HeartItem())
     return this.getHearts() + inventoryHearts + echestHearts
 }
 
@@ -50,13 +50,13 @@ fun Player.removeHeartForce(): Boolean {
     if (success) return true
 
     // Take heart from inventory
-    if (ConfigManager.takeInvHearts || ConfigManager.takeEchestHearts) {
+    if (ConfigManager.heartRemovalPriority.contains("INV") || ConfigManager.heartRemovalPriority.contains("E-CHEST")) {
         if (this.inventory.containsAtLeast(HeartItem(), 1)) {
             // Remove heart from inventory
             removeItemFromInv(this.inventory, HeartItem(), 1)
             return true
         }
-        else if (ConfigManager.takeEchestHearts && this.enderChest.containsAtLeast(HeartItem(), 1)){
+        else if (ConfigManager.heartRemovalPriority.contains("E-CHEST") && this.enderChest.containsAtLeast(HeartItem(), 1)){
             // Remove item from ender chest
             removeItemFromInv(this.enderChest, HeartItem(), 1)
             return true
@@ -74,11 +74,9 @@ fun Player.addHeartForce(): Boolean {
     val success = this.changeHearts(1.0)
     if (success) return true
 
-    // Get config value for giving heart items
-    val giveHeart = ConfigManager.heartItemReward
 
     // Add heart to inventory
-    if (giveHeart) {
+    if (ConfigManager.giveHeartItemOnMax) {
         this.give(HeartItem())
         return true
     }

@@ -2,54 +2,68 @@
 config-version: 1
 # u can touch this tho \/
 
-# Make minimum hearts 0 to ban a player when they run out of hearts.
 minimum-hearts: 3.0
 maximum-hearts: 15.0
-
-revive-item: true
 
 # Whether to ban people if they die at minimum hearts
 ban-bellow-min: true
 
-# Whether to give the killer the heart item when killing someone when they're on max hearts
-reward-heart-item: false
+items:
+  revive:
+    enabled: true
+    revived-hearts: 3.0 # How many hearts to give the revived player
+    recipe:
+      enabled: true
+      type: SHAPED
+      shape:
+        - "NHN"
+        - "HDH"
+        - "NHN"
+      ingredients:
+        N: NETHERITE_SCRAP
+        H: HEART
+        D: DIAMOND_BLOCK
 
-# What places to take hearts from when being killed at minimum hearts
-# (doesn't do anything if minimum is at zero as you just get banned if you get to zero hearts)
-# Bar : the hearts above your hotbar (normal lifesteal)
-# Inv : the hearts in your inventory + bar
-# All : the hearts in you e chest + inv + bar
-take-hearts: All
+  heart:
+    enabled: true
 
-# What inventory types are heart items allowed to be in.
-# EChest : players inventory + the ender chests
-# Player : only a player's inventory
-# All : all inventories (allows them to be stored in anything)
-allowed-inventories: EChest
+    # Whether the hearts glow when dropped on the ground
+    glowing: false
 
-# recipes enabled to craft hearts
-# None : No recipe to craft hearts
-# Keys : The option of the recipe with keys https://drive.google.com/file/d/1WrzDOSns-2eps4k1LR2mTE-S7WgUSvLV/view?usp=drive_link
-# Totems : The recipe option with totems https://drive.google.com/file/d/1LfiNXzPYGm4ulsKE1zTf_AJrLFm9PXKv/view?usp=drive_link
-# Both : Both recipes
-recipes-enabled: Both
+    # Give a killer the heart item if they are on max hearts when killing someone
+    give-item-on-max: false
 
-# Whether to limit the ability to craft a heart to how many hearts the player currently has
-limit-heart-crafting : false
-# Maximum hearts you are able to have to be able to craft a heat.
-max-heart-craft-hearts: 10.0
+    # NONE : none of the options, will still drop if the killer has max hearts and no inventory space (if give-item-on-max is true)
+    # KILL : always drop when a player is killed or credited for a death
+    # UNCREDITED : drop the heart item on player death even from a trap or accidental death but not from a kill
+    # ALWAYS : always drop a heart on player death
+    drop-on-kill: NONE
 
-# What places to count hearts from when there is a heart limit (for example, crafting hearts)
-# Bar : the hearts above your hotbar
-# Inv : the hearts in your inventory + bar
-# All : the hearts in you e chest + inv + bar
-heart-count-include: All
+    storable-locations:
+      E-CHEST: true
+      ALL-CONTAINERS: false
 
-# what to make hearts immune to
-# Complete : will not despawn, will not be destroyed
-# Damage : invulnerable to all except despawning
-# None : normal item, no protection
-indestructible-hearts: Complete
+    heart-removal-priority: # Which order to take hearts from and where to take from, comment out places that you dont want to be touched on death
+      - "BAR"
+      - "INV"
+      #- "E-CHEST"
 
-# Whether to make the heat item glow when on the ground
-glowing-hearts: false
+    immunity:
+      void-immunity: true
+      despawn-immunity: true
+      damage-immunity: true
+
+    recipe:
+      enabled: true
+      restrictions:
+        enabled: false
+        maximum-hearts: 10.0dr
+      type: SHAPED
+      shape:
+        - "K K"
+        - "DND"
+        - "K K"
+      ingredients:
+        K: OMINOUS_TRIAL_KEY
+        D: DIAMOND
+        N: NETHERITE_SCRAP

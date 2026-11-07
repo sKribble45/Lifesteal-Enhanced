@@ -22,6 +22,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.sKribble.lifestealEnhanced.ConfigManager
 import org.sKribble.lifestealEnhanced.items.HeartItem
+import java.lang.classfile.instruction.ConstantInstruction
 
 class HeartItemListener : Listener {
 
@@ -42,7 +43,7 @@ class HeartItemListener : Listener {
                 )
             }
             // prevent putting heart into shelf or pot
-            if (ConfigManager.allowedInventories != null) event.isCancelled = true
+            if (!ConfigManager.storeHeartAllContainers) event.isCancelled = true
         }
     }
 
@@ -51,7 +52,7 @@ class HeartItemListener : Listener {
         val entity = event.rightClicked
         val item = event.player.inventory.getItem(event.hand)
         // Prevent putting heart into item frame
-        if (item.isSimilar(HeartItem()) && (entity.type == EntityType.ITEM_FRAME || entity.type == EntityType.GLOW_ITEM_FRAME) && ConfigManager.allowedInventories != null) event.isCancelled = true
+        if (item.isSimilar(HeartItem()) && (entity.type == EntityType.ITEM_FRAME || entity.type == EntityType.GLOW_ITEM_FRAME) && !ConfigManager.storeHeartAllContainers) event.isCancelled = true
     }
 
 
@@ -60,12 +61,21 @@ class HeartItemListener : Listener {
     fun onItemPickup(event: InventoryPickupItemEvent){
         val item = event.item.itemStack
         val inventory = event.inventory
-        if (item.isSimilar(HeartItem()) && inventory.type != InventoryType.PLAYER && ConfigManager.allowedInventories != null) event.isCancelled = true
+        if (item.isSimilar(HeartItem()) && inventory.type != InventoryType.PLAYER && !ConfigManager.storeHeartAllContainers) event.isCancelled = true
     }
 
 
     //---------------------- Inventory ---------------------
-    val allowedInvs = ConfigManager.allowedInventories
+    //"EChest" ->
+    //"Player" -> listOf(InventoryType.WORKBENCH, InventoryType.CRAFTING, InventoryType.PLAYER)
+    //val allowedInvs = ConfigManager.allowedInventories
+//    "EChest" -> listOf(InventoryType.WORKBENCH, InventoryType.CRAFTING, InventoryType.PLAYER, InventoryType.ENDER_CHEST)
+//    "Player" -> listOf(InventoryType.WORKBENCH, InventoryType.CRAFTING, InventoryType.PLAYER)
+
+    val allowedInvs =
+        if (ConfigManager.storeHeartEchest)
+            listOf(InventoryType.WORKBENCH, InventoryType.CRAFTING, InventoryType.PLAYER, InventoryType.ENDER_CHEST)
+        else listOf(InventoryType.WORKBENCH, InventoryType.CRAFTING, InventoryType.PLAYER)
 
     private fun isHeart(item: ItemStack?) : Boolean{
         item ?: return false
@@ -76,7 +86,7 @@ class HeartItemListener : Listener {
     }
     @EventHandler
     fun onInventoryClick(event: InventoryClickEvent) {
-        allowedInvs ?: return
+        if (ConfigManager.storeHeartAllContainers) return
         val topInventory = event.view.topInventory
         val clickedInventory = event.clickedInventory ?: return
         val currentItem = event.currentItem
@@ -104,6 +114,7 @@ class HeartItemListener : Listener {
     }
     @EventHandler
     fun onInventoryDrag(event: InventoryDragEvent){
+        if (ConfigManager.storeHeartAllContainers) return
         allowedInvs ?: return
         if (event.inventory.type !in allowedInvs && (isHeart(event.cursor) || isHeart(event.oldCursor))){
             event.isCancelled = true
@@ -115,7 +126,7 @@ class HeartItemListener : Listener {
     @EventHandler
     fun itemDespawnEvent(event: ItemDespawnEvent){
         val item = event.entity.itemStack
-        if (item.isSimilar(HeartItem()) && ConfigManager.heartProtectionNum == 2){
+        if (item.isSimilar(HeartItem()) && ConfigManager.heartDespawnImmunity){
             event.isCancelled = true
         }
     }
@@ -125,7 +136,7 @@ class HeartItemListener : Listener {
         val entity = event.entity
         if (entity is Item){
             val item = entity.itemStack
-            if (item.isSimilar(HeartItem()) && ConfigManager.heartProtectionNum >= 1) {
+            if (item.isSimilar(HeartItem()) && ConfigManager.heartDamageImmunity) {
                 event.isCancelled = true
             }
         }
@@ -135,11 +146,11 @@ class HeartItemListener : Listener {
     //---------------------- Crafting ---------------------
     @EventHandler
     fun onCraftItem(event: CraftItemEvent) {
-        if (!ConfigManager.limitHeartCrafting) return
+        if (!ConfigManager.heartCraftingRestriction) return
         if (event.recipe.result.isSimilar(HeartItem())){
             val player = event.whoClicked as? Player ?: return
             // Disable crafting the item if hearts is above maximum
-            if (player.getHeartsExtensive() >= ConfigManager.maxCraftingHearts){
+            if (player.getHeartsExtensive() >= ConfigManager.heartCraftingRestrictionMaxHearts){
                 player.sendActionBar(Component.text("You have too many hearts to craft one.").color(TextColor.color(252, 65, 71)))
                 event.isCancelled = true
             }

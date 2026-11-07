@@ -27,7 +27,7 @@ class ReviveGui() : InventoryHolder{
         val bannedPlayers : MutableList<PlayerProfile> = mutableListOf()
         val banList = Bukkit.getBanList(BanListType.PROFILE)
         banList.getEntries<BanEntry<PlayerProfile>>().forEach{
-                entry -> if (entry.source == "org.sKribble.lifestealEnhanced") bannedPlayers.addFirst(entry.banTarget)
+                entry -> if (entry.source == "org.sKribble.lifestealEnhanced") bannedPlayers.add(entry.banTarget)
         }
         for (playerProfile in bannedPlayers){
             inventory.addItem(getSkull(playerProfile))
