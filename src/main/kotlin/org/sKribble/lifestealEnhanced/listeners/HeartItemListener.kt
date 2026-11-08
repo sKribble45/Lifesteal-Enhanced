@@ -11,6 +11,7 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageEvent
+import org.bukkit.event.entity.EntityRemoveEvent
 import org.bukkit.event.entity.ItemDespawnEvent
 import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.CraftItemEvent
@@ -22,6 +23,7 @@ import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
+import org.bukkit.util.Vector
 import org.sKribble.lifestealEnhanced.ConfigManager
 import org.sKribble.lifestealEnhanced.PluginManager.plugin
 import org.sKribble.lifestealEnhanced.items.HeartItem
@@ -161,19 +163,27 @@ class HeartItemListener : Listener {
         if (entity is Item){
             val item = entity.itemStack
             if (item.isSimilar(HeartItem())) {
-                var isCancelled = false
                 if (ConfigManager.heartDamageImmunity) {
-                    isCancelled = true
+                    event.isCancelled = true
                 }
-                if (ConfigManager.heartVoidImmunity && damageCause == EntityDamageEvent.DamageCause.VOID){
-                    isCancelled = true
-                    entity.teleport(entity.location.add(0.0, 10.0,0.0))
-                }
-                event.isCancelled = isCancelled
             }
         }
     }
 
+    @EventHandler
+    fun onEntityRemove(event: EntityRemoveEvent){
+        if (!ConfigManager.heartVoidImmunity) return
+        val droppedItem = event.entity as? Item ?: return
+        if (event.cause == EntityRemoveEvent.Cause.OUT_OF_WORLD && isHeart(droppedItem.itemStack)) {
+            val itemLocation = droppedItem.location.clone()
+            itemLocation.y = 1.0
+            val newItem = droppedItem.world.dropItem(itemLocation, HeartItem())
+            newItem.setGravity(false)
+            newItem.velocity = Vector(0, 0, 0)
+            newItem.isGlowing = true
+            newItem.isUnlimitedLifetime = true
+        }
+    }
 
     //---------------------- Crafting ---------------------
     @EventHandler
