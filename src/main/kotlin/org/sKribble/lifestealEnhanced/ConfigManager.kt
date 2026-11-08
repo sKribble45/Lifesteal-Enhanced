@@ -34,8 +34,8 @@ object ConfigManager {
         ) else null
         heartItemEnabled = config.getBoolean("items.heart.enabled")
         glowingHearts = config.getBoolean("items.heart.glowing")
-        dropHeartOnKill = config.getString("items.heart.drop-on-kill")
-            ?: throw IllegalArgumentException("items.heart.drop-on-kill not present in config.yml")
+        dropHeartOnKill = if (heartItemEnabled) config.getString("items.heart.drop-on-kill")
+            ?: throw IllegalArgumentException("items.heart.drop-on-kill not present in config.yml") else "NONE"
         storeHeartEchest = config.getBoolean("items.heart.storable-locations.E-CHEST")
         storeHeartAllContainers = config.getBoolean("items.heart.storable-locations.ALL-CONTAINERS")
 
@@ -54,7 +54,7 @@ object ConfigManager {
         ) else null
         heartCraftingRestriction = config.getBoolean("items.heart.recipe.restrictions.enabled")
         heartCraftingRestrictionMaxHearts = config.getDouble("items.heart.recipe.restrictions.maximum-hearts")
-        giveHeartItemOnMax = config.getBoolean("items.heart.give-item-on-max")
+        giveHeartItemOnMax = if(heartItemEnabled) config.getBoolean("items.heart.give-item-on-max") else false
     }
 
     var minHearts : Double = 0.0
