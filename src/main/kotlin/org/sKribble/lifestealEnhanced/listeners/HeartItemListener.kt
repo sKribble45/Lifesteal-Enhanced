@@ -4,6 +4,8 @@ import changeHearts
 import getHeartsExtensive
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
+import org.bukkit.Material
+import org.bukkit.block.Block
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Item
 import org.bukkit.entity.Player
@@ -21,9 +23,13 @@ import org.bukkit.event.player.PlayerInteractEntityEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.sKribble.lifestealEnhanced.ConfigManager
+import org.sKribble.lifestealEnhanced.PluginManager.plugin
 import org.sKribble.lifestealEnhanced.items.HeartItem
 
 class HeartItemListener : Listener {
+    private fun isShelf(block: Block) : Boolean{
+        return block.type.name.endsWith("_SHELF")
+    }
 
     //---------------------- Interaction ----------------------
     @EventHandler
@@ -41,8 +47,23 @@ class HeartItemListener : Listener {
                         .color(TextColor.color(252, 65, 71))
                 )
             }
-            // prevent putting heart into shelf or pot
+            // Prevent putting heart into shelf or pot
             if (ConfigManager.allowedInventories != null) event.isCancelled = true
+        }
+    }
+
+    @EventHandler
+    fun disablePoweredShelves(event: PlayerInteractEvent){
+        val player = event.player
+        if (!ConfigManager.storeHeartAllContainers && event.action.isRightClick) {
+            // Prevent powered shelves
+            val hotbar: List<ItemStack?> =
+                (0..8).map { player.inventory.getItem(it) }
+            val hotbarContainsHeart = hotbar.any { it?.isSimilar(HeartItem()) == true }
+            val block = event.clickedBlock ?: return
+            plugin.logger.info("contains heart: $hotbarContainsHeart is shelf: ${isShelf(block)} is powered ${block.blockPower}")
+            if (isShelf(block) && block.blockPower > 0 && hotbarContainsHeart)
+                event.isCancelled = true
         }
     }
 
