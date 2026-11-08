@@ -12,6 +12,7 @@ import io.papermc.paper.command.brigadier.Commands
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes
 import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver
 import org.bukkit.entity.Player
+import org.sKribble.lifestealEnhanced.ConfigManager
 import org.sKribble.lifestealEnhanced.PluginManager.plugin
 import org.sKribble.lifestealEnhanced.items.HeartItem
 import org.sKribble.lifestealEnhanced.items.ReviveItem
@@ -106,6 +107,7 @@ class LifestealCommand {
     }
     fun reloadCommand(context: CommandContext<CommandSourceStack>) : Int{
         plugin.reloadConfig()
+        ConfigManager.reloadConfig()
         context.source.sender.sendMessage("Config reloaded!")
         return 1
     }
