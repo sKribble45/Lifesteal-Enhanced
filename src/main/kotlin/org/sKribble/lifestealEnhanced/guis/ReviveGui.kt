@@ -1,6 +1,5 @@
 package org.sKribble.lifestealEnhanced.guis
 
-import changeHearts
 import com.destroystokyo.paper.profile.PlayerProfile
 import io.papermc.paper.ban.BanListType
 import net.kyori.adventure.text.Component
@@ -12,6 +11,7 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryHolder
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.SkullMeta
+import org.sKribble.lifestealEnhanced.ConfigManager
 import org.sKribble.lifestealEnhanced.PluginManager.plugin
 import org.sKribble.lifestealEnhanced.items.ReviveItem
 import org.sKribble.lifestealEnhanced.removeItemFromInv
@@ -27,7 +27,7 @@ class ReviveGui() : InventoryHolder{
         val bannedPlayers : MutableList<PlayerProfile> = mutableListOf()
         val banList = Bukkit.getBanList(BanListType.PROFILE)
         banList.getEntries<BanEntry<PlayerProfile>>().forEach{
-                entry -> if (entry.source == "org.sKribble.lifestealEnhanced") bannedPlayers.addFirst(entry.banTarget)
+                entry -> if (entry.source == "org.sKribble.lifestealEnhanced") bannedPlayers.add(entry.banTarget)
         }
         for (playerProfile in bannedPlayers){
             inventory.addItem(getSkull(playerProfile))
@@ -48,6 +48,7 @@ class ReviveGui() : InventoryHolder{
         val revivedPlayerProfile = skullMeta.playerProfile ?: return
         val banList = Bukkit.getBanList(BanListType.PROFILE)
         banList.pardon(revivedPlayerProfile)
+        revivedPlayerProfile.setHearts(ConfigManager.revivedHearts)
         player.sendMessage(Component.text("You revived ${revivedPlayerProfile.name}, they can now rejoin."))
         this.inventory.close()
         removeItemFromInv(player.inventory, ReviveItem(), 1)

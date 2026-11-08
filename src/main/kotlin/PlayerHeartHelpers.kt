@@ -1,8 +1,5 @@
-import io.papermc.paper.ban.BanListType
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
-import org.bukkit.BanList
-import org.bukkit.Bukkit
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeInstance
 import org.bukkit.entity.Player
@@ -10,7 +7,6 @@ import org.sKribble.lifestealEnhanced.ConfigManager
 import org.sKribble.lifestealEnhanced.countItemsInInv
 import org.sKribble.lifestealEnhanced.items.HeartItem
 import org.sKribble.lifestealEnhanced.removeItemFromInv
-import kotlin.time.Instant
 
 fun Player.changeHearts(amount: Double) : Boolean{
     val healthAttribute : AttributeInstance = this.getAttribute(Attribute.MAX_HEALTH)!!
@@ -37,8 +33,8 @@ fun Player.getHearts() : Double{
  * This function acts like Player.getHearts whilst considering the config value "heart-count-include"
  */
 fun Player.getHeartsExtensive() : Double{
-    val inventoryHearts = if (ConfigManager.countInvHearts || ConfigManager.countEchestHearts) countItemsInInv(this.inventory, HeartItem()) else 0
-    val echestHearts = if (ConfigManager.countEchestHearts) countItemsInInv(this.enderChest, HeartItem()) else 0
+    val inventoryHearts = countItemsInInv(this.inventory, HeartItem())
+    val echestHearts = countItemsInInv(this.enderChest, HeartItem())
     return this.getHearts() + inventoryHearts + echestHearts
 }
 
@@ -46,20 +42,30 @@ fun Player.getHeartsExtensive() : Double{
  * If heat removal fails, look in the inventory for heart items and remove one if found
  */
 fun Player.removeHeartForce(): Boolean {
-    val success = this.changeHearts(-1.0)
-    if (success) return true
 
-    // Take heart from inventory
-    if (ConfigManager.takeInvHearts || ConfigManager.takeEchestHearts) {
-        if (this.inventory.containsAtLeast(HeartItem(), 1)) {
-            // Remove heart from inventory
-            removeItemFromInv(this.inventory, HeartItem(), 1)
-            return true
-        }
-        else if (ConfigManager.takeEchestHearts && this.enderChest.containsAtLeast(HeartItem(), 1)){
-            // Remove item from ender chest
-            removeItemFromInv(this.enderChest, HeartItem(), 1)
-            return true
+    for (removalMethod in ConfigManager.heartRemovalPriority){
+        when (removalMethod){
+            "BAR" -> {
+                val success = this.changeHearts(-1.0)
+                if (success) return true
+                else continue
+            }
+            "INV" -> {
+                if (this.inventory.containsAtLeast(HeartItem(), 1)) {
+                    // Remove heart from inventory
+                    removeItemFromInv(this.inventory, HeartItem(), 1)
+                    return true
+                }
+                else continue
+            }
+            "E-CHEST" -> {
+                if (ConfigManager.heartRemovalPriority.contains("E-CHEST") && this.enderChest.containsAtLeast(HeartItem(), 1)){
+                    // Remove item from ender chest
+                    removeItemFromInv(this.enderChest, HeartItem(), 1)
+                    return true
+                }
+                else continue
+            }
         }
     }
 
@@ -74,11 +80,9 @@ fun Player.addHeartForce(): Boolean {
     val success = this.changeHearts(1.0)
     if (success) return true
 
-    // Get config value for giving heart items
-    val giveHeart = ConfigManager.heartItemReward
 
     // Add heart to inventory
-    if (giveHeart) {
+    if (ConfigManager.giveHeartItemOnMax) {
         this.give(HeartItem())
         return true
     }

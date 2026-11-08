@@ -11,8 +11,10 @@ import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.command.brigadier.Commands
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes
 import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
-import org.sKribble.lifestealEnhanced.PluginManager.plugin
+import org.bukkit.inventory.ItemStack
+import org.sKribble.lifestealEnhanced.ConfigManager
 import org.sKribble.lifestealEnhanced.items.HeartItem
 import org.sKribble.lifestealEnhanced.items.ReviveItem
 import setHearts
@@ -105,7 +107,16 @@ class LifestealCommand {
         return 0
     }
     fun reloadCommand(context: CommandContext<CommandSourceStack>) : Int{
-        plugin.reloadConfig()
+        // Remove old recipes
+        ConfigManager.reviveRecipe?.let { Bukkit.removeRecipe(it.key) }
+        ConfigManager.heartRecipe?.let { Bukkit.removeRecipe(it.key) }
+
+        ConfigManager.reloadConfig()
+
+        // Reload recipes
+        ConfigManager.reviveRecipe?.let { Bukkit.addRecipe(it) }
+        ConfigManager.heartRecipe?.let { Bukkit.addRecipe(it) }
+
         context.source.sender.sendMessage("Config reloaded!")
         return 1
     }
@@ -113,13 +124,36 @@ class LifestealCommand {
         val player = context.getArgument("player", PlayerSelectorArgumentResolver::class.java)
             .resolve(context.source)
             .firstOrNull()
+        val sender = context.source.sender
         if (player is Player) {
             val itemArg = StringArgumentType.getString(context, "item")
-            val itemStack = if (itemArg == "heart") HeartItem() else ReviveItem()
+            lateinit var itemStack : ItemStack
+
+            when (itemArg.lowercase()){
+                "heart" -> {
+                    if (ConfigManager.heartItemEnabled)
+                        itemStack = HeartItem()
+                    else{
+                        sender.sendMessage("Heart item is disabled")
+                    }
+                }
+                "revive" -> {
+                    if (ConfigManager.reviveEnabled)
+                        itemStack = ReviveItem()
+                    else{
+                        sender.sendMessage("Revive item is disabled")
+                    }
+                }
+                else -> {
+                    sender.sendMessage("Unrecognised item")
+                    return 0
+                }
+            }
+
             val amount = IntegerArgumentType.getInteger(context, "amount")
             itemStack.amount = amount
             player.give(itemStack)
-            context.source.sender.sendMessage("Gave $amount ${itemStack.itemMeta.displayName()}(s) to ${player.name}")
+            sender.sendMessage("Gave $amount ${itemStack.itemMeta.displayName()}(s) to ${player.name}")
             return 1
         }
         return 0
