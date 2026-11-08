@@ -18,7 +18,6 @@ class PlayerDeathListener() : Listener {
         val player = event.player
         val killer = player.killer
         if (player.removeHeartForce()) {
-            //TODO test as it could drop it after the player has been killed and has respawned
             if (ConfigManager.dropHeartOnKill == "ALWAYS") player.dropItem(HeartItem())
             else if (killer != null) {
                 if (ConfigManager.dropHeartOnKill == "KILL") player.dropItem(HeartItem())
