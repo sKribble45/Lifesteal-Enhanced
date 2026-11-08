@@ -1,8 +1,5 @@
-import io.papermc.paper.ban.BanListType
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
-import org.bukkit.BanList
-import org.bukkit.Bukkit
 import org.bukkit.attribute.Attribute
 import org.bukkit.attribute.AttributeInstance
 import org.bukkit.entity.Player
@@ -10,7 +7,6 @@ import org.sKribble.lifestealEnhanced.ConfigManager
 import org.sKribble.lifestealEnhanced.countItemsInInv
 import org.sKribble.lifestealEnhanced.items.HeartItem
 import org.sKribble.lifestealEnhanced.removeItemFromInv
-import kotlin.time.Instant
 
 fun Player.changeHearts(amount: Double) : Boolean{
     val healthAttribute : AttributeInstance = this.getAttribute(Attribute.MAX_HEALTH)!!
@@ -46,20 +42,30 @@ fun Player.getHeartsExtensive() : Double{
  * If heat removal fails, look in the inventory for heart items and remove one if found
  */
 fun Player.removeHeartForce(): Boolean {
-    val success = this.changeHearts(-1.0)
-    if (success) return true
 
-    // Take heart from inventory
-    if (ConfigManager.heartRemovalPriority.contains("INV") || ConfigManager.heartRemovalPriority.contains("E-CHEST")) {
-        if (this.inventory.containsAtLeast(HeartItem(), 1)) {
-            // Remove heart from inventory
-            removeItemFromInv(this.inventory, HeartItem(), 1)
-            return true
-        }
-        else if (ConfigManager.heartRemovalPriority.contains("E-CHEST") && this.enderChest.containsAtLeast(HeartItem(), 1)){
-            // Remove item from ender chest
-            removeItemFromInv(this.enderChest, HeartItem(), 1)
-            return true
+    for (removalMethod in ConfigManager.heartRemovalPriority){
+        when (removalMethod){
+            "BAR" -> {
+                val success = this.changeHearts(-1.0)
+                if (success) return true
+                else continue
+            }
+            "INV" -> {
+                if (this.inventory.containsAtLeast(HeartItem(), 1)) {
+                    // Remove heart from inventory
+                    removeItemFromInv(this.inventory, HeartItem(), 1)
+                    return true
+                }
+                else continue
+            }
+            "E-CHEST" -> {
+                if (ConfigManager.heartRemovalPriority.contains("E-CHEST") && this.enderChest.containsAtLeast(HeartItem(), 1)){
+                    // Remove item from ender chest
+                    removeItemFromInv(this.enderChest, HeartItem(), 1)
+                    return true
+                }
+                else continue
+            }
         }
     }
 
