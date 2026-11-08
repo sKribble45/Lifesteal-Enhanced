@@ -19,6 +19,8 @@ object ConfigManager {
     }
 
     fun reloadConfig(){
+        plugin.reloadConfig()
+        config = plugin.config
         minHearts = config.getDouble("minimum-hearts")
         maxHearts = config.getDouble("maximum-hearts")
         banBelowMinHearts = config.getBoolean("ban-bellow-min")

@@ -11,9 +11,9 @@ import io.papermc.paper.command.brigadier.CommandSourceStack
 import io.papermc.paper.command.brigadier.Commands
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes
 import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.sKribble.lifestealEnhanced.ConfigManager
-import org.sKribble.lifestealEnhanced.PluginManager.plugin
 import org.sKribble.lifestealEnhanced.items.HeartItem
 import org.sKribble.lifestealEnhanced.items.ReviveItem
 import setHearts
@@ -106,8 +106,16 @@ class LifestealCommand {
         return 0
     }
     fun reloadCommand(context: CommandContext<CommandSourceStack>) : Int{
-        plugin.reloadConfig()
+        // Remove old recipes
+        ConfigManager.reviveRecipe?.let { Bukkit.removeRecipe(it.key) }
+        ConfigManager.heartRecipe?.let { Bukkit.removeRecipe(it.key) }
+
         ConfigManager.reloadConfig()
+
+        // Reload recipes
+        ConfigManager.reviveRecipe?.let { Bukkit.addRecipe(it) }
+        ConfigManager.heartRecipe?.let { Bukkit.addRecipe(it) }
+
         context.source.sender.sendMessage("Config reloaded!")
         return 1
     }
