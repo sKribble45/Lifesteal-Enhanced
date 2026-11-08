@@ -22,7 +22,6 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
 import org.sKribble.lifestealEnhanced.ConfigManager
 import org.sKribble.lifestealEnhanced.items.HeartItem
-import java.lang.classfile.instruction.ConstantInstruction
 
 class HeartItemListener : Listener {
 
@@ -115,7 +114,6 @@ class HeartItemListener : Listener {
     @EventHandler
     fun onInventoryDrag(event: InventoryDragEvent){
         if (ConfigManager.storeHeartAllContainers) return
-        allowedInvs ?: return
         if (event.inventory.type !in allowedInvs && (isHeart(event.cursor) || isHeart(event.oldCursor))){
             event.isCancelled = true
         }
@@ -132,12 +130,21 @@ class HeartItemListener : Listener {
     }
 
     @EventHandler
-    fun entityDeathEvent(event: EntityDamageEvent){
+    fun entityDamageEvent(event: EntityDamageEvent){
         val entity = event.entity
+        val damageCause = event.cause
         if (entity is Item){
             val item = entity.itemStack
-            if (item.isSimilar(HeartItem()) && ConfigManager.heartDamageImmunity) {
-                event.isCancelled = true
+            if (item.isSimilar(HeartItem())) {
+                var isCancelled = false
+                if (ConfigManager.heartDamageImmunity) {
+                    isCancelled = true
+                }
+                if (ConfigManager.heartVoidImmunity && damageCause == EntityDamageEvent.DamageCause.VOID){
+                    isCancelled = true
+                    entity.teleport(entity.location.add(0.0, 10.0,0.0))
+                }
+                event.isCancelled = isCancelled
             }
         }
     }
