@@ -14,69 +14,93 @@ object ConfigManager {
 
     fun init(plugin: Plugin) {
         config = plugin.config
+        plugin.saveDefaultConfig()
+        reloadConfig()
     }
-    val minHearts : Double
-        get() = config.getDouble("minimum-hearts")
-    val maxHearts : Double
-        get() = config.getDouble("maximum-hearts")
 
-    val banBelowMinHearts : Boolean
-        get() = config.getBoolean("ban-bellow-min")
-
-    // Revive Item
-    val reviveEnabled : Boolean
-        get() = config.getBoolean("items.revive.enabled")
-    val revivedHearts : Double
-        get() = config.getDouble("items.revive.revived-hearts")
-    val reviveRecipe : CraftingRecipe?
-        get() = parser.parseRecipe(
+    fun reloadConfig(){
+        minHearts = config.getDouble("minimum-hearts")
+        maxHearts = config.getDouble("maximum-hearts")
+        banBelowMinHearts = config.getBoolean("ban-bellow-min")
+        reviveEnabled = config.getBoolean("items.revive.enabled")
+        revivedHearts = config.getDouble("items.revive.revived-hearts")
+        reviveRecipe = parser.parseRecipe(
             config.getConfigurationSection("items.revive.recipe")
                 ?: throw IllegalArgumentException("No 'items.revive.recipe' section"),
             NamespacedKey(plugin, "revive_recipe"),
             ReviveItem()
         )
-
-    // Heart Item
-    val heartItemEnabled : Boolean
-        get() = config.getBoolean("items.heart.enabled")
-    val glowingHearts : Boolean
-        get() = config.getBoolean("items.heart.glowing")
-    val dropHeartOnKill : String
-        get() = config.getString("items.heart.drop-on-kill")
+        heartItemEnabled = config.getBoolean("items.heart.enabled")
+        glowingHearts = config.getBoolean("items.heart.glowing")
+        dropHeartOnKill = config.getString("items.heart.drop-on-kill")
             ?: throw IllegalArgumentException("items.heart.drop-on-kill not present in config.yml")
+        storeHeartEchest = config.getBoolean("items.heart.storable-locations.E-CHEST")
+        storeHeartAllContainers = config.getBoolean("items.heart.storable-locations.ALL-CONTAINERS")
 
-    val storeHeartEchest : Boolean
-        get() = config.getBoolean("items.heart.storable-locations.E-CHEST")
-    val storeHeartAllContainers : Boolean
-        get() = config.getBoolean("items.heart.storable-locations.ALL-CONTAINERS")
+        val priority = config.getStringList("items.heart.heart-removal-priority")
+        if (!priority.contains("BAR")) throw IllegalArgumentException("items.heart.heart-removal-priority needs to contain the 'BAR' section")
+        heartRemovalPriority = priority
 
-    val heartRemovalPriority : List<String>
-        get() {
-            val priority = config.getStringList("items.heart.heart-removal-priority")
-            if (!priority.contains("BAR")) throw IllegalArgumentException("items.heart.heart-removal-priority needs to contain the 'BAR' section")
-            return priority
-        }
-
-    val heartVoidImmunity : Boolean
-        get() = config.getBoolean("items.heart.immunity.void-immunity")
-    val heartDespawnImmunity : Boolean
-        get() = config.getBoolean("items.heart.immunity.despawn-immunity")
-    val heartDamageImmunity : Boolean
-        get() = config.getBoolean("items.heart.immunity.damage-immunity")
-
-    val heartRecipe : CraftingRecipe?
-        get() = parser.parseRecipe(
+        heartVoidImmunity = config.getBoolean("items.heart.immunity.void-immunity")
+        heartDespawnImmunity = config.getBoolean("items.heart.immunity.despawn-immunity")
+        heartDamageImmunity = config.getBoolean("items.heart.immunity.damage-immunity")
+        heartRecipe = parser.parseRecipe(
             config.getConfigurationSection("items.heart.recipe")
                 ?: throw IllegalArgumentException("No 'items.heart.recipe' section"),
             NamespacedKey(plugin, "heart_recipe"),
             HeartItem()
         )
+        heartCraftingRestriction = config.getBoolean("items.heart.recipe.restrictions.enabled")
+        heartCraftingRestrictionMaxHearts = config.getDouble("items.heart.recipe.restrictions.maximum-hearts")
+        giveHeartItemOnMax = config.getBoolean("items.heart.give-item-on-max")
+    }
 
-    val heartCraftingRestriction : Boolean
-        get() = config.getBoolean("items.heart.recipe.restrictions.enabled")
-    val heartCraftingRestrictionMaxHearts : Double
-        get() = config.getDouble("items.heart.recipe.restrictions.maximum-hearts")
+    var minHearts : Double = 0.0
+        private set
+    var maxHearts : Double = 0.0
+        private set
 
-    val giveHeartItemOnMax : Boolean
-        get() = config.getBoolean("items.heart.give-item-on-max")
+    var banBelowMinHearts : Boolean = false
+        private set
+
+    // Revive Item
+    var reviveEnabled : Boolean = false
+        private set
+    var revivedHearts : Double = 0.0
+        private set
+    var reviveRecipe : CraftingRecipe? = null
+        private set
+
+    // Heart Item
+    var heartItemEnabled : Boolean = false
+        private set
+    var glowingHearts : Boolean = false
+        private set
+    var dropHeartOnKill : String = ""
+        private set
+
+    var storeHeartEchest : Boolean = false
+        private set
+    var storeHeartAllContainers : Boolean = false
+        private set
+
+    var heartRemovalPriority : List<String> = emptyList()
+
+    var heartVoidImmunity : Boolean = false
+        private set
+    var heartDespawnImmunity : Boolean = false
+        private set
+    var heartDamageImmunity : Boolean = false
+        private set
+
+    var heartRecipe : CraftingRecipe? = null
+        private set
+
+    var heartCraftingRestriction : Boolean = false
+        private set
+    var heartCraftingRestrictionMaxHearts : Double = 0.0
+        private set
+
+    var giveHeartItemOnMax : Boolean = false
+        private set
 }

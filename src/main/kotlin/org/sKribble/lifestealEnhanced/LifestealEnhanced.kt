@@ -11,7 +11,7 @@ import org.sKribble.lifestealEnhanced.listeners.ReviveItemListener
 class LifestealEnhanced : JavaPlugin() {
 
     override fun onEnable() {
-        saveDefaultConfig()
+
         PluginManager.init(this)
         ConfigManager.init(this)
         server.pluginManager.registerEvents(PlayerDeathListener(), this)
