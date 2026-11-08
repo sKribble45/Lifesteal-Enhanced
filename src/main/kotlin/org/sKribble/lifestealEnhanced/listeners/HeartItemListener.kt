@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.ItemDespawnEvent
+import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.CraftItemEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryDragEvent
@@ -86,11 +87,6 @@ class HeartItemListener : Listener {
 
 
     //---------------------- Inventory ---------------------
-    //"EChest" ->
-    //"Player" -> listOf(InventoryType.WORKBENCH, InventoryType.CRAFTING, InventoryType.PLAYER)
-    //val allowedInvs = ConfigManager.allowedInventories
-//    "EChest" -> listOf(InventoryType.WORKBENCH, InventoryType.CRAFTING, InventoryType.PLAYER, InventoryType.ENDER_CHEST)
-//    "Player" -> listOf(InventoryType.WORKBENCH, InventoryType.CRAFTING, InventoryType.PLAYER)
 
     val allowedInvs =
         if (ConfigManager.storeHeartEchest)
@@ -129,6 +125,15 @@ class HeartItemListener : Listener {
         // prevent bundles
         if (event.isLeftClick && (isBundle(cursorItem) && isHeart(currentItem) || (isBundle(currentItem) && isHeart(cursorItem)))){
             event.isCancelled = true
+        }
+
+        // Prevent using num keys to transfer hearts to containers
+        if (event.click == ClickType.NUMBER_KEY) {
+            val player = event.whoClicked as? Player
+            if (player != null){
+                if (isHeart(player.inventory.getItem(event.hotbarButton)) && topInventory.type !in allowedInvs)
+                    event.isCancelled = true
+            }
         }
 
     }
