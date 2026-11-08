@@ -202,7 +202,8 @@ class HeartItemListener : Listener {
     //---------------------- Drop ---------------------
     @EventHandler
     fun itemDropEvent(event: PlayerDropItemEvent){
-        val itemEntity = event.itemDrop
-        itemEntity.isGlowing = ConfigManager.glowingHearts
+        val item = event.itemDrop
+        if (isHeart(item.itemStack))
+            item.isGlowing = ConfigManager.glowingHearts
     }
 }
