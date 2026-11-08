@@ -1,5 +1,6 @@
 package org.sKribble.lifestealEnhanced
 
+import OfflineHealthListener
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
@@ -19,6 +20,7 @@ class LifestealEnhanced : JavaPlugin() {
         server.pluginManager.registerEvents(HeartItemListener(), this)
         server.pluginManager.registerEvents(ReviveItemListener(), this)
         server.pluginManager.registerEvents(GuiListener(), this)
+        server.pluginManager.registerEvents(OfflineHealthListener(), this)
 
 
         lifecycleManager.registerEventHandler(LifecycleEvents.COMMANDS){ event ->

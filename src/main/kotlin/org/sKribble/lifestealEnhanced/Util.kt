@@ -7,7 +7,7 @@ fun removeItemFromInv(inv : Inventory, item: ItemStack, amount: Int){
     val invIterator = inv.iterator()
     while (invIterator.hasNext()) {
         val itemItr = invIterator.next()
-        if (itemItr.isSimilar(item)) {
+        if (itemItr != null && itemItr.isSimilar(item)) {
             itemItr.amount -= amount
             break
         }
