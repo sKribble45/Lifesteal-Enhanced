@@ -26,12 +26,12 @@ object ConfigManager {
         banBelowMinHearts = config.getBoolean("ban-bellow-min")
         reviveEnabled = config.getBoolean("items.revive.enabled")
         revivedHearts = config.getDouble("items.revive.revived-hearts")
-        reviveRecipe = parser.parseRecipe(
+        reviveRecipe = if (reviveEnabled) parser.parseRecipe(
             config.getConfigurationSection("items.revive.recipe")
                 ?: throw IllegalArgumentException("No 'items.revive.recipe' section"),
             NamespacedKey(plugin, "revive_recipe"),
             ReviveItem()
-        )
+        ) else null
         heartItemEnabled = config.getBoolean("items.heart.enabled")
         glowingHearts = config.getBoolean("items.heart.glowing")
         dropHeartOnKill = config.getString("items.heart.drop-on-kill")
@@ -46,12 +46,12 @@ object ConfigManager {
         heartVoidImmunity = config.getBoolean("items.heart.immunity.void-immunity")
         heartDespawnImmunity = config.getBoolean("items.heart.immunity.despawn-immunity")
         heartDamageImmunity = config.getBoolean("items.heart.immunity.damage-immunity")
-        heartRecipe = parser.parseRecipe(
+        heartRecipe = if (heartItemEnabled) parser.parseRecipe(
             config.getConfigurationSection("items.heart.recipe")
                 ?: throw IllegalArgumentException("No 'items.heart.recipe' section"),
             NamespacedKey(plugin, "heart_recipe"),
             HeartItem()
-        )
+        ) else null
         heartCraftingRestriction = config.getBoolean("items.heart.recipe.restrictions.enabled")
         heartCraftingRestrictionMaxHearts = config.getDouble("items.heart.recipe.restrictions.maximum-hearts")
         giveHeartItemOnMax = config.getBoolean("items.heart.give-item-on-max")
