@@ -18,7 +18,7 @@ import org.sKribble.lifestealEnhanced.removeItemFromInv
 import setHearts
 
 class ReviveGui() : InventoryHolder{
-    private val inventory: Inventory = plugin.server.createInventory(this, 18)
+    private var inventory: Inventory
     override fun getInventory(): Inventory {
         return this.inventory
     }
@@ -29,6 +29,7 @@ class ReviveGui() : InventoryHolder{
         banList.getEntries<BanEntry<PlayerProfile>>().forEach{
                 entry -> if (entry.source == "org.sKribble.lifestealEnhanced") bannedPlayers.add(entry.banTarget)
         }
+        inventory = plugin.server.createInventory(this, (bannedPlayers.size / 9+1) * 9, Component.text("Revive"))
         for (playerProfile in bannedPlayers){
             inventory.addItem(getSkull(playerProfile))
         }
