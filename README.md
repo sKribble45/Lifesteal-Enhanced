@@ -101,6 +101,7 @@ drop-on-kill: NONE
 </summary>
 
 #### Shaped:
+![Heart Recipe](https://github.com/sKribble45/Lifesteal-Enhanced/blob/master/images/heart-recipe.png?raw=true)
 ```yaml
 recipe:
   enabled: true
