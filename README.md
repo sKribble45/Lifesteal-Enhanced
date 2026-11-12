@@ -19,28 +19,6 @@ A paper plugin which aims to re-create the lifesteal concept but with some uniqu
 - Customizable damage immunity and void immunity for hearts
 - Customizable limits for crafting hearts (maximum hearts the player is allowed to be on to be able to craft a heart, it counts hearts in ender chest and inventory for the calculation)
 
-## Resource Pack
-Enter these values into your server.properties to set the pack as a default on your server.
-```properties
-resource-pack=https://download.mc-packs.net/pack/68e5107905464e726093cb370fe723bba339561b.zip
-resource-pack-sha1=68e5107905464e726093cb370fe723bba339561b
-resource-pack-id=6680eec6-9185-439e-8e55-064bc5f6cd00
-resource-pack-prompt={"text":"This server uses a custom resource pack for lifesteal.", "color":"gold"}
-require-resource-pack=true
-```
-
-## Operator Commands
-
-|Command|  Description|
-|---------------------------|---|
-|`/lifesteal hearts set <player> <ammount>`|Sets the amount of hearts that the selected player has.|
-|`/lifesteal hearts get <player>`|Gets the amount of hearts that the selected player has.  |
-|`/lifesteal hearts add <player> <amount>`                |Adds an amount of hearts to the selected player.    |
-|`/lifesteal hearts remove <player> <amount>`     |Removes an amount of hearts from the selected player.|
-|`/lifesteal give <item> <player> <amount>`|Gives a player an item from the plugin. For `<item>` it can be ether `heart` or `revive`.|
-|`/lifesteal reload`|Reloads the plugin's config from `config.yml`.|
-|`/withdraw <amount>`|Takes your heart and turns it into a heart item, `<amount>` option is optional.|
-
 ## Configuration
 
 <details>
@@ -102,17 +80,17 @@ heart-removal-priority:
 drop-on-kill: NONE
 ```
 
-### `NONE`
-_image_
+### `drop-on-kill: NONE`
+![Example of the NONE option](https://github.com/sKribble45/Lifesteal-Enhanced/blob/master/images/NONE.gif?raw=true)
 
-### `KILL`
-_image_
+### `drop-on-kill: KILL`
+![Example of the KILL option](https://github.com/sKribble45/Lifesteal-Enhanced/blob/master/images/KILL.gif?raw=true)
 
-### `UNCREDITED`
-_image_
+### `drop-on-kill: UNCREDITED`
+![Example of the UNCREDITED option](https://github.com/sKribble45/Lifesteal-Enhanced/blob/master/images/UNCREDITED.gif?raw=true)
 
-### `ALWAYS`
-_image_
+### `drop-on-kill: ALWAYS`
+![Example of the ALWAYS option](https://github.com/sKribble45/Lifesteal-Enhanced/blob/master/images/ALWAYS.gif?raw=true)
 
 
 </details>
@@ -165,8 +143,8 @@ recipe:
 </summary>
 
 ### Default Recipes
-_Default Revive Recipe Image_
-_Default Heart Recipe Image_
+![Default Heart Recipe](https://github.com/sKribble45/Lifesteal-Enhanced/blob/master/images/heart-recipe.png?raw=true)
+![Default Revive Recipe](https://github.com/sKribble45/Lifesteal-Enhanced/blob/master/images/revive-recipe.png?raw=true)
 
 ---
 
@@ -240,3 +218,26 @@ items:
         N: NETHERITE_SCRAP
 ```
 </details>
+
+## Resource Pack
+Enter these values into your server.properties to set the pack as a default on your server.
+```properties
+resource-pack=https://download.mc-packs.net/pack/68e5107905464e726093cb370fe723bba339561b.zip
+resource-pack-sha1=68e5107905464e726093cb370fe723bba339561b
+resource-pack-id=6680eec6-9185-439e-8e55-064bc5f6cd00
+resource-pack-prompt={"text":"This server uses a custom resource pack for lifesteal.", "color":"gold"}
+require-resource-pack=true
+```
+
+## Operator Commands
+
+|Command|  Description|
+|---------------------------|---|
+|`/lifesteal hearts set <player> <ammount>`|Sets the amount of hearts that the selected player has.|
+|`/lifesteal hearts get <player>`|Gets the amount of hearts that the selected player has.  |
+|`/lifesteal hearts add <player> <amount>`                |Adds an amount of hearts to the selected player.    |
+|`/lifesteal hearts remove <player> <amount>`     |Removes an amount of hearts from the selected player.|
+|`/lifesteal give <item> <player> <amount>`|Gives a player an item from the plugin. For `<item>` it can be ether `heart` or `revive`.|
+|`/lifesteal reload`|Reloads the plugin's config from `config.yml`.|
+|`/withdraw <amount>`|Takes your heart and turns it into a heart item, `<amount>` option is optional.|
+
